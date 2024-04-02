@@ -1,0 +1,37 @@
+---
+title: "The Next Generation of Canadian Salmon"
+subtitle: "The Effects of the Commercial Fishing Industry on Spawning Rates"
+author: 
+  - Timothius Prajogi
+thanks: "Code and data are available at: https://github.com/prajogt/canadian_salmon_spawn.git ."
+date: today
+date-format: long
+abstract: "Using the NuSEDS dataset provided by the Government of Canada and statistics published by Fisheries and Oceans Canada regarding the number of commercial fishing licences issued by Pacific Region, we investigate the effects of commercial fishing on the reproductive capacity of Canadian Salmon. In tandem, we investigate how much of the change in spawn rates can be attributed to the health of the ecosystem, climate, and the fish that live in it. This paper discusses the impact of direct human intervention in the form of commercial fishing, aiming to highlight the importance in proper management and control in the fishing industry in alignement with changes in the environment by predicting spawning trends of future generations."
+format: pdf
+toc: true
+number-sections: true
+bibliography: references.bib
+header-includes:
+  \usepackage{placeins}
+---
+
+# Introduction
+
+The declining trend in Canadian salmon runs, as observed by many avid anglers and supported by empirical data (INSERT CITATION), serves as the focal point of this paper. Once thriving waterways have experienced a significant reduction in salmon populations, posing challenges not only for recreational anglers but also for the fishing industry, a vital component of Canadian exports and numerous livelihoods, particularly in coastal regions. Due to this significance to many Canadians, it is important to investigate the decline in salmon runs, highlighting the importance of understanding and addressing these challenges that are faced in the effort to safeguard future salmon generations.
+
+This paper will focus on commercial fishing trends, ocean climate trends, and spawning rates over the last decade, using datasets and fisheries statistics provided through the Government of Canada's open data portal. In particular, the NuSEDS (New Salmon Escapement Database System) provides key insights on spawner records and abundance estimates for freshwater streams and tributaries, with statistics provided by Fisheries and Oceans Canada providing detail on the amount of licenses issued and fish landed by species. Through this data we discover the potential drivers of salmon population decline, including but not limited to habitat degradation, climate change impacts, and human-induced factors such as over fishing and habitat loss. In identifying the critical areas for repair and reform, we aim to explore potential mitigation strategies and management plans with the goal of restoring salmon populations and promoting sustainable fishing practices, protecting this key resource. Preserving healthy salmon populations is not only essential for maintaining biodiversity and ecosystem balance but also for meeting demand required of this industry, both in labour and in product. 
+
+This paper will introduce the data and models we used to analyze these themes and trends, presenting our findings and their implications for future salmon generations. 
+
+# Data
+
+# Model
+
+# Results
+
+# Discussion
+
+# Appendix
+
+# References
+
