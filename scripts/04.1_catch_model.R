@@ -25,6 +25,12 @@ catch_data <-
 
 spawning_population_data <- read_parquet("output/data/aggregated_spawning_population.parquet")
 
+catch_by_method <- read_parquet("output/data/catch_by_method.parquet")
+
+catch_by_method <-
+  catch_by_method |>
+  rename(YEAR = CALENDAR_YEAR)
+
 # Since for this situation, the catch data only starts at 2002, only consider 
 # spawning data for those years
 spawning_population_data <-
@@ -36,7 +42,8 @@ spawning_population_data <-
 model_data <- 
   left_join(catch_data, spawning_population_data, by = c("YEAR", "SPECIES")) |>
   mutate(SALMON_POPULATION = ifelse(is.na(SALMON_POPULATION), 0, SALMON_POPULATION)) |>
-  filter(SPECIES != "STEELHEAD") # Not common
+  filter(SPECIES != "STEELHEAD") |> # Not common 
+  left_join(catch_by_method, by = "YEAR")
 
 # Gather the data to predict total salmon population and not just one species
 model_data <- 
@@ -45,13 +52,16 @@ model_data <-
   summarize(
     VESSEL_COUNT = max(VESSEL_COUNT), # Max since all are the same for a year
     BOAT_DAYS = max(BOAT_DAYS),
-    SALMON_KPT = sum(SALMON_KPT),
-    SALMON_RLD = sum(SALMON_RLD),
-    SALMON_POPULATION = sum(SALMON_POPULATION)
+    SALMON_KPT = sum(SALMON_KPT) / 100000, # Track catches in 100,000s
+    SALMON_RLD = sum(SALMON_RLD) / 100000,
+    SALMON_POPULATION = sum(SALMON_POPULATION) / 100000,
+    PERCENTAGE_gill_net = max(PERCENTAGE_gill_net) * 100, # Convert decimals to percentages
+    PERCENTAGE_seine = max(PERCENTAGE_seine) * 100,
+    PERCENTAGE_troll = max(PERCENTAGE_troll) * 100
   )
 
 # The linear model based on the catch data
-catch_population_model <- lm(SALMON_POPULATION ~ VESSEL_COUNT + BOAT_DAYS + SALMON_KPT + SALMON_RLD, data = model_data)
+catch_population_model <- lm(SALMON_POPULATION ~ VESSEL_COUNT + BOAT_DAYS + SALMON_KPT + SALMON_RLD + PERCENTAGE_gill_net + PERCENTAGE_seine + PERCENTAGE_troll, data = model_data)
 
 saveRDS(
   catch_population_model,

@@ -20,7 +20,7 @@ troll_catches <- read_parquet("output/data/troll_catches.parquet")
 
 aggregated_gill_net_data <- 
   gill_net_catches |> 
-  group_by(CALENDAR_YEAR, MGMT_AREA) |>
+  group_by(CALENDAR_YEAR) |>
   summarize(
     VESSEL_COUNT = sum(VESSEL_COUNT, na.rm = TRUE),
     BOAT_DAYS = sum(BOAT_DAYS, na.rm = TRUE),
@@ -36,11 +36,12 @@ aggregated_gill_net_data <-
     CHINOOK_RELD = sum(CHINOOK_RELD, na.rm = TRUE),
     STEELHEAD_KEPT = sum(STEELHEAD_KEPT, na.rm = TRUE),
     STEELHEAD_RELD = sum(STEELHEAD_RELD, na.rm = TRUE)
-  )
+  )|>
+  mutate(KEPT_SUM = SOCKEYE_KEPT + COHO_KEPT + PINK_KEPT + CHUM_KEPT + CHINOOK_KEPT + STEELHEAD_KEPT)
 
 aggregated_seine_data <- 
   seine_catches |> 
-  group_by(CALENDAR_YEAR, MGMT_AREA) |>
+  group_by(CALENDAR_YEAR) |>
   summarize(
     VESSEL_COUNT = sum(VESSEL_COUNT, na.rm = TRUE),
     BOAT_DAYS = sum(BOAT_DAYS, na.rm = TRUE),
@@ -56,11 +57,12 @@ aggregated_seine_data <-
     CHINOOK_RELD = sum(CHINOOK_RELD, na.rm = TRUE),
     STEELHEAD_KEPT = sum(STEELHEAD_KEPT, na.rm = TRUE),
     STEELHEAD_RELD = sum(STEELHEAD_RELD, na.rm = TRUE)
-  )
+  )|>
+  mutate(KEPT_SUM = SOCKEYE_KEPT + COHO_KEPT + PINK_KEPT + CHUM_KEPT + CHINOOK_KEPT + STEELHEAD_KEPT)
 
 aggregated_troll_data <- 
   troll_catches |> 
-  group_by(CALENDAR_YEAR, MGMT_AREA) |>
+  group_by(CALENDAR_YEAR) |>
   summarize(
     VESSEL_COUNT = sum(VESSEL_COUNT, na.rm = TRUE),
     BOAT_DAYS = sum(BOAT_DAYS, na.rm = TRUE),
@@ -76,35 +78,44 @@ aggregated_troll_data <-
     CHINOOK_RELD = sum(CHINOOK_RELD, na.rm = TRUE),
     STEELHEAD_KEPT = sum(STEELHEAD_KEPT, na.rm = TRUE),
     STEELHEAD_RELD = sum(STEELHEAD_RELD, na.rm = TRUE)
-  )
+  ) |>
+  mutate(KEPT_SUM = SOCKEYE_KEPT + COHO_KEPT + PINK_KEPT + CHUM_KEPT + CHINOOK_KEPT + STEELHEAD_KEPT)
+
+
+# Caculate the proportion of catches that came from a method
+gill_net_sum <- 
+  aggregated_gill_net_data |>
+  select(CALENDAR_YEAR, KEPT_SUM)
+seine_sum <- 
+  aggregated_seine_data |>
+  select(CALENDAR_YEAR, KEPT_SUM)
+troll_sum <- 
+  aggregated_troll_data |>
+  select(CALENDAR_YEAR, KEPT_SUM)
+
+# Merge the three tables based
+merged_data <- merge(gill_net_sum, seine_sum, by = "CALENDAR_YEAR", suffixes = c("_gill_net", "_seine"))
+merged_data <- merge(merged_data, troll_sum, by = "CALENDAR_YEAR")
+
+# Calculate the percentage contribution of each table for each year
+merged_data <- 
+  merged_data |>
+  mutate(
+    PERCENTAGE_gill_net = KEPT_SUM_gill_net / (KEPT_SUM_gill_net + KEPT_SUM_seine + KEPT_SUM),
+    PERCENTAGE_seine = KEPT_SUM_seine / (KEPT_SUM_gill_net + KEPT_SUM_seine + KEPT_SUM),
+    PERCENTAGE_troll = KEPT_SUM / (KEPT_SUM_gill_net + KEPT_SUM_seine + KEPT_SUM)
+  ) |>
+  select(CALENDAR_YEAR, PERCENTAGE_gill_net, PERCENTAGE_seine, PERCENTAGE_troll)
+
+# Save that data
+write_parquet(merged_data, "output/data/catch_by_method.parquet")
 
 # Combine all tables
 aggregated_catch_data <- 
   bind_rows(aggregated_gill_net_data, aggregated_seine_data, aggregated_troll_data)
 
-# Sum up all catch statistics for any type of fishing
-aggregated_catch_data_by_area <-
-  aggregated_catch_data |>
-  group_by(CALENDAR_YEAR, MGMT_AREA) |>
-  summarize(
-    VESSEL_COUNT = sum(VESSEL_COUNT),
-    BOAT_DAYS = sum(BOAT_DAYS),
-    SOCKEYE_KEPT = sum(SOCKEYE_KEPT),
-    SOCKEYE_RELD = sum(SOCKEYE_RELD),
-    COHO_KEPT = sum(COHO_KEPT),
-    COHO_RELD = sum(COHO_RELD),
-    PINK_KEPT = sum(PINK_KEPT),
-    PINK_RELD = sum(PINK_RELD),
-    CHUM_KEPT = sum(CHUM_KEPT),
-    CHUM_RELD = sum(CHUM_RELD),
-    CHINOOK_KEPT = sum(CHINOOK_KEPT),
-    CHINOOK_RELD = sum(CHINOOK_RELD),
-    STEELHEAD_KEPT = sum(STEELHEAD_KEPT),
-    STEELHEAD_RELD = sum(STEELHEAD_RELD)
-  )
-
 aggregated_catch_data <-
-  aggregated_catch_data_by_area |>
+  aggregated_catch_data |>
   group_by(CALENDAR_YEAR) |>
   summarize(
     VESSEL_COUNT = sum(VESSEL_COUNT),
