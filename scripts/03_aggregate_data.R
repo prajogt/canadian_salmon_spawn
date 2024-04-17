@@ -128,11 +128,11 @@ pivoted_catch_data <-
   aggregated_catch_data |>
   pivot_longer(cols = -c(CALENDAR_YEAR, VESSEL_COUNT, BOAT_DAYS), names_to = "fish_action", values_to = "value") |>
   separate(fish_action, into = c("fish_species", "action"), sep = "_", remove = FALSE) |>
-  mutate(action = ifelse(action == "KEPT", "salmon_kept", "salmon_released")) |>
+  mutate(action = ifelse(action == "KEPT", "SALMON_KPT", "SALMON_RLD")) |>
   select(-fish_action) |>
   pivot_wider(names_from = action, values_from = value) |>
-  mutate(species = fish_species) |>
-  select(CALENDAR_YEAR, VESSEL_COUNT, BOAT_DAYS, species, salmon_kept, salmon_released)
+  mutate(SPECIES = fish_species) |>
+  select(CALENDAR_YEAR, VESSEL_COUNT, BOAT_DAYS, SPECIES, SALMON_KPT, SALMON_RLD)
 
 write_parquet(pivoted_catch_data, "output/data/aggregated_pivoted_catch_data.parquet")
 
@@ -151,6 +151,8 @@ aggregated_spawning_population_by_area <-
     TOTAL_RETURN_TO_RIVER = sum(TOTAL_RETURN_TO_RIVER, na.rm = TRUE),
     SALMON_POPULATION = sum(SALMON_POPULATION, na.rm = TRUE)
   )
+
+aggregated_spawning_population_by_area$SPECIES = toupper(aggregated_spawning_population_by_area$SPECIES)
 
 aggregated_spawning_population <- 
   aggregated_spawning_population_by_area |>
