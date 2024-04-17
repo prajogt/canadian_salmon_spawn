@@ -32,11 +32,25 @@ spawning_population_data <-
   filter(YEAR >= 2002) |>
   select(YEAR, SPECIES, SALMON_POPULATION)
 
+# Join the tables together by year and species
 model_data <- 
   left_join(catch_data, spawning_population_data, by = c("YEAR", "SPECIES")) |>
   mutate(SALMON_POPULATION = ifelse(is.na(SALMON_POPULATION), 0, SALMON_POPULATION)) |>
   filter(SPECIES != "STEELHEAD") # Not common
 
+# Gather the data to predict total salmon population and not just one species
+model_data <- 
+  model_data |>
+  group_by(YEAR) |>
+  summarize(
+    VESSEL_COUNT = max(VESSEL_COUNT), # Max since all are the same for a year
+    BOAT_DAYS = max(BOAT_DAYS),
+    SALMON_KPT = sum(SALMON_KPT),
+    SALMON_RLD = sum(SALMON_RLD),
+    SALMON_POPULATION = sum(SALMON_POPULATION)
+  )
+
+# The linear model based on the catch data
 catch_population_model <- lm(SALMON_POPULATION ~ VESSEL_COUNT + BOAT_DAYS + SALMON_KPT + SALMON_RLD, data = model_data)
 
 saveRDS(
