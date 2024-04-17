@@ -78,9 +78,11 @@ aggregated_troll_data <-
     STEELHEAD_RELD = sum(STEELHEAD_RELD, na.rm = TRUE)
   )
 
+# Combine all tables
 aggregated_catch_data <- 
   bind_rows(aggregated_gill_net_data, aggregated_seine_data, aggregated_troll_data)
 
+# Sum up all catch statistics for any type of fishing
 aggregated_catch_data_by_area <-
   aggregated_catch_data |>
   group_by(CALENDAR_YEAR, MGMT_AREA) |>
@@ -139,6 +141,8 @@ write_parquet(pivoted_catch_data, "output/data/aggregated_pivoted_catch_data.par
 # Aggregate spawning population data
 
 spawning_population <- read_parquet('output/data/spawning_population.parquet')
+
+# Group first by the species, area, and year
 aggregated_spawning_population_by_area <- 
   spawning_population |>
   mutate(SALMON_POPULATION = coalesce(TOTAL_RETURN_TO_RIVER, NATURAL_ADULT_SPAWNERS)) |>
@@ -152,8 +156,10 @@ aggregated_spawning_population_by_area <-
     SALMON_POPULATION = sum(SALMON_POPULATION, na.rm = TRUE)
   )
 
+# Rename values to be capitalized
 aggregated_spawning_population_by_area$SPECIES = toupper(aggregated_spawning_population_by_area$SPECIES)
 
+# Group together only by species and year
 aggregated_spawning_population <- 
   aggregated_spawning_population_by_area |>
   group_by(SPECIES, YEAR) |>
