@@ -1,0 +1,48 @@
+DATA DICTIONARY ,
+,
+Column Name,Column Definition
+FISHERY,"The type of fishery. Gill net, seine or troll."
+ESTIMATE_TYPE,Preliminary in-season catch estimates
+LICENCE_AREA,Licence Area
+CALENDAR_YEAR,Year the fishery took place
+MGMT_AREA,Management Area
+VESSEL_COUNT,Number of vessels fishing in the management area
+BOAT_DAYS,Number of days fished in the management area
+SOCKEYE_KEPT,Sockeye kept
+SOCKEYE_RELD,Sockeye released
+COHO_KEPT,Coho kept
+COHO_RELD,Coho released
+PINK_KEPT,Pink kept
+PINK_RELD,Pink released
+CHUM_KEPT,Chum kept
+CHUM_RELD,Chum released
+CHINOOK_ KEPT,Chinook kept
+CHINOOK_RELD,Chinook released
+STEELHEAD_KEPT,Steelhead kept
+STEELHEAD_RELD,Steelhead released
+NOTES,Notes
+,
+,
+DICTIONNAIRE DE DONNÉES,
+,
+Nom Colonne,Définitions de Colonne
+PÉCHES,"Type de pêche. Filet maillant, senne ou pêche à la traîne."
+­CLASSIFIER_ ESTIMATION,En cours de saison preliminaire des estimations des prises
+ZONE_LICENCE,Zone_Licence
+ANNÉE _ CALENDRIER,Année de la pêche
+ZONE_GASTION,Zone_gastion
+COMPTER_ CIRCULATION MARITIME,Nombre de bateaux pêchant dans la zone de gestion
+BATEAU_JOURS,Nombre de jours de pêche dans la zone de gestion
+ROUGE _ CONSERV,Conservé_rouge
+ROUGE _ RELÂCHÉ,Relâché _rouge
+COHO_ CONSERV,Conservé _coho
+COHO_ RELÂCHÉ,Relâché _coho
+ROSE _ CONSERV,Conservé _rose
+ROSE _ RELÂCHÉ,Relâché _rose
+KÉTA _ CONSERV,Conservé _kéta
+KÉTA _ RELÂCHÉ,Relâché _ kéta
+QUINNAT _ CONSERV,Conservé _quinnat
+QUINNAT _ RELÂCHÉ,Relâché _quinnat
+TRUITE ARC-EN-CIEL _ CONSERV,Conservé _ truite arc-en-ciel
+TRUITE ARC-EN-CIEL _ RELÂCHÉ,Relâché_ truite arc-en-ciel
+REMARQUES,Remarques
