@@ -33,7 +33,11 @@ spawning_population <-
   nuseds_data |>
   select(AREA, WATERBODY, LOCAL_NAME, YEAR, SPECIES,
          NATURAL_ADULT_SPAWNERS, NATURAL_JACK_SPAWNERS, NATURAL_SPAWNERS_TOTAL, TOTAL_RETURN_TO_RIVER) |>
-  filter(!is.na(NATURAL_ADULT_SPAWNERS))
+  filter(!is.na(NATURAL_ADULT_SPAWNERS)) |>
+  mutate(
+    NATURAL_ADULT_SPAWNERS = ifelse(is.na(NATURAL_ADULT_SPAWNERS), 0, NATURAL_ADULT_SPAWNERS),
+    NATURAL_JACK_SPAWNERS = ifelse(is.na(NATURAL_JACK_SPAWNERS), 0, NATURAL_JACK_SPAWNERS)
+  )
   
 # Broodstock (amount taken out for the use of human influenced spawning)
 broodstock <-
@@ -51,7 +55,7 @@ broodstock <-
     TOTAL_BROODSTOCK_REMOVALS = ifelse(is.na(TOTAL_BROODSTOCK_REMOVALS), 0, TOTAL_BROODSTOCK_REMOVALS),
     OTHER_REMOVALS = ifelse(is.na(OTHER_REMOVALS), 0, OTHER_REMOVALS),
   ) |>
-  mutate(TOTAL_RETURN_TO_RIVER, max(NATURAL_ADULT_SPAWNERS, NATURAL_SPAWNERS_TOTAL, TOTAL_RETURN_TO_RIVER))
+  mutate(TOTAL_RETURN_TO_RIVER = pmax(NATURAL_ADULT_SPAWNERS, NATURAL_SPAWNERS_TOTAL, TOTAL_RETURN_TO_RIVER))
   
 # Spawn timing features (arrival, peak)
 spawn_timings <-
