@@ -15,23 +15,202 @@ header-includes:
   \usepackage{placeins}
 ---
 
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+#| echo: false
+
+#### Workspace setup ####
+library(knitr)
+library(tidyverse)
+library(modelsummary)
+library(rstanarm)
+library(arrow)
+```
+
 # Introduction
 
 The declining trend in Canadian salmon runs, as observed by many avid anglers and supported by empirical data (INSERT CITATION), serves as the focal point of this paper. Once thriving waterways have experienced a significant reduction in salmon populations, posing challenges not only for recreational anglers but also for the fishing industry, a vital component of Canadian exports and numerous livelihoods, particularly in coastal regions. Due to this significance to many Canadians, it is important to investigate the decline in salmon runs, highlighting the importance of understanding and addressing these challenges that are faced in the effort to safeguard future salmon generations.
 
-This paper will focus on commercial fishing trends, ocean climate trends, and spawning rates over the last decade, using datasets and fisheries statistics provided through the Government of Canada's open data portal. In particular, the NuSEDS (New Salmon Escapement Database System) provides key insights on spawner records and abundance estimates for freshwater streams and tributaries, with statistics provided by Fisheries and Oceans Canada providing detail on the amount of fish landed or released by species. Through this data we discover the potential human-induced drivers of salmon population change including factors such as over fishing and artificial breeding. In identifying the critical areas for repair and reform, we aim to explore potential mitigation strategies and management plans with the goal of restoring salmon populations and promoting sustainable fishing practices, protecting this key resource. Preserving healthy salmon populations is not only essential for maintaining biodiversity and ecosystem balance but also for meeting demand required of this industry, both in labour and in product. 
+This paper will focus on commercial fishing trends, ocean climate trends, and spawning rates over the last decade, using datasets and fisheries statistics provided through the Government of Canada's open data portal. In particular, the NuSEDS (New Salmon Escapement Database System) provides key insights on spawn records and abundance estimates for freshwater streams and tributaries, with statistics provided by Fisheries and Oceans Canada providing detail on the amount of fish landed or released through commercial fishing methods by species. Through this data we discover the potential human-induced drivers of salmon population change including factors such as over fishing and artificial breeding. In identifying the critical areas for repair and reform, we aim to explore potential mitigation strategies and management plans with the goal of restoring salmon populations and promoting sustainable fishing practices, protecting this key resource. Preserving healthy salmon populations is not only essential for maintaining biodiversity and ecosystem balance but also for meeting demand required of this industry, both in labour and in product. 
 
 Through information gathered from these datasets, we were able to verify correlations between the frequency of fishing and the salmon population, as well as the previous years salmon population and artificial breeding practices affect on future generations. However, although these are significant factors, they do not account for all the change that is seen throughout the years. Salmon population's fluctuation cannot be fully explained by these human factors alone, which means there must be some other factors that are not described in this data that should be investigated. 
 
-This paper will introduce the data and models we used to analyze these themes and trends, explaining why features and datasets were chosen and how they are relevant to the research topic. Then the paper will present our findings and their implications for future salmon generations observed in the models that were created as well as in the data. We will conclude by discussing the weaknesses and future steps that could be made to further improve on this research.
+This paper will introduce the data and models we used to analyze these themes and trends, explaining why features and datasets were chosen and how they are relevant to the research topic. The models we create will use commercial fisheries' catch estimates and past years artificial and natural spawn success respectively as the estimands to predict salmon populations. Then the paper will present our findings and their implications for future salmon generations observed in the models that were created as well as in the data. We will conclude by discussing the weaknesses and future steps that could be made to further improve on this research.
 
 # Data
+
+The data used in this paper was provided by the Government of Canada through their Open Government Portal, published by Fisheries and Oceans Canada.
+
+For information regarding the populations of Canadian Salmon in the Pacific region, the New Salmon Escapement Database System was used to retrieve the quality and health of the Salmon population. This data is not only used to measure the populations but other health and success measures that certain area salmon have. These observations are made during the spawning season for salmon (from September - November), recording the amount of salmon that have come to spawn in a certain waterbody. As it is not possible for those wildlife officials to individually count each salmon that enters a waterway at any time during the day, an estimated count was made based on the abundance of salmon currently present during the observation.
+
+The database provides salmon spawning observations starting from 1920's, but population numbers were not recorded / provided until 1979. As such, rows not providing population numbers were not considered. In addition, for each model, specific features were necessary to create the model, and the original dataset was split into two models, each only containing the entries that include relevant information. 
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+#| echo: false
+
+# Load in data
+
+# Catch data
+gill_net_catches <- read_parquet("data/gill_net_catches.parquet")
+seine_catches <- read_parquet("data/seine_catches.parquet")
+troll_catches <- read_parquet("data/troll_catches.parquet")
+
+# Spawn data
+spawning_population <- read_parquet("data/spawning_population.parquet")
+broodstock <- read_parquet("data/broodstock.parquet")
+
+```
+
+```{r, table, width="100%"}
+#| warning: false
+#| message: false
+#| echo: false
+#| label: tbl-spawnpopulation
+#| tbl-cap: "NuSEDS Data on Spawning Population"
+
+spawning_population |>
+    select(-LOCAL_NAME, -NATURAL_SPAWNERS_TOTAL) |>
+    head() |>
+    kable(
+      col.names = c("Area", "Name of Waterbody", "Year", "Species", "Natural Adult Spawners", "Natural Jack Spawners", "Total Return To River"),
+      booktabs = TRUE
+    )
+```
+
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| label: tbl-broodstock
+#| tbl-cap: "NuSEDS Data on Broodstock and Population"
+
+broodstock |>
+  select(-NATURAL_ADULT_SPAWNERS, -NATURAL_SPAWNERS_TOTAL, -TOTAL_BROODSTOCK_REMOVALS) |>
+  filter(ADULT_BROODSTOCK_REMOVALS > 0) |> # For the sack of the visual
+  head() |>
+  kable(
+    col.names = c("Area", "Name of Waterbody", "Year", "Species", "Adult Broodstock Removals", "Jack Broodstock Removals", "Other Removals", "Total Return To River"),
+    booktabs = TRUE
+  )
+```
+
+The most important part of this dataset that we consider is the spawning salmon population observed at various waterways as shown in @tbl-spawnpopulation. We then also consider the broodstock removal statistics in @tbl-broodstock, which is the amount of salmon that were removed for the purposes of artificial breeding. These salmon's progeny are later released back into the wild.
+
+Variables for both @tbl-spawnpopulation and @tbl-broodstock:
+
+Waterbody + Area + Year:
+
+  -   This defines the waterbody and the general management area that this observation came from, and what year that observation was made. I have provided the map that shows the actual geographical area that an area code signifies.
+
+Species:
+
+  -   This defines the species of salmon that the observation was made for. Observations were made for Sockeye, Chum, Pink, chinook, Coho, Steelhead, Atlantic, and Kokanee salmon, but only observations for the more common salmon species were made. (Sockeye, Chum, Pink, Chinook, and Coho) These are the salmon that make up the vast majority of the sport and the commercial market, which is the focus of this paper, and why the other salmon observations were not considered.
+
+Total Return to River:
+
+  -   This defines the total amount of salmon of that species that was observed in that waterbody, being number of natural spawners + number of non-natural spawners (fish released / cultivated by the government to support salmon population). For @tbl-spawnpopulation, an N/A value indicates that only natural spawners were observed.
+
+Variables for @tbl-spawnpopulation:
+
+Natural Adult Spawners:
+
+  -   These are the amount of salmon observed that have reached maturity.
+
+Natural Jack Spawners:
+
+  -   These are fish that have matured at an early age, and are much smaller than the adult spawners. When the value is N/A this indicates that no jacks were not observed.
+
+Variables for @tbl-broodstock:
+
+Adult Broodstock Removals:
+
+  -   Similarly to the spawning population data, these are the amount of mature salmon that were removed from the waterbody for the purposes of breeding.
+
+Jack Broodstock Removals:
+
+  -   Similarly to the spawning population data, these are the amount of jack salmon that were removed from the waterbody for the purposes of breeding.
+
+Other Removals:
+
+  -   These are the amount of salmon that were removed from their natural environment by humans for other reasons (not broodstock) which were not defined by the dataset. 
+
+
+
+For information regarding
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| label: tbl-catchdata_gill
+#| tbl-cap: "Commercial Salmon Fishing Catch Estimates from 2005 - 2022 from Gill Net Fisheries"
+
+gill_net_catches |>
+  select(-FISHERY, -LICENCE_AREA, -NOTES) |>
+  head() |>
+  kable(
+    col.names = c("Year", "Management Area", "Vessel Count", "Boat Days", "Sockeye Kept", "Sockeye Released", "Coho Kept", "Coho Released", "Pink Kept", "Pink Released", "Chum Kept", "Chum Released", "Chinook Kept", "Chinook Released", "Steelhead Kept", "Steelhead Released"),
+    booktabs = TRUE
+  )
+```
+
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| label: tbl-catchdata_seine
+#| tbl-cap: "Commercial Salmon Fishing Catch Estimates from 2005 - 2022 from Seine Net Fisheries"
+
+seine_catches |>
+  select(-FISHERY, -LICENCE_AREA, -NOTES) |>
+  head() |>
+  kable(
+    col.names = c("Year", "Management Area", "Vessel Count", "Boat Days", "Sockeye Kept", "Sockeye Released", "Coho Kept", "Coho Released", "Pink Kept", "Pink Released", "Chum Kept", "Chum Released", "Chinook Kept", "Chinook Released", "Steelhead Kept", "Steelhead Released"),
+    booktabs = TRUE
+  )
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| label: tbl-catchdata_troll
+#| tbl-cap: "Commercial Salmon Fishing Catch Estimates from 2005 - 2022 from Trolling Fisheries"
+
+troll_catches |>
+  select(-FISHERY, -LICENCE_AREA, -NOTES) |>
+  head() |>
+  kable(
+    col.names = c("Year", "Management Area", "Vessel Count", "Boat Days", "Sockeye Kept", "Sockeye Released", "Coho Kept", "Coho Released", "Pink Kept", "Pink Released", "Chum Kept", "Chum Released", "Chinook Kept", "Chinook Released", "Steelhead Kept", "Steelhead Released"),
+    booktabs = TRUE
+  )
+```
 
 # Model
 
 # Results
 
+```{r}
+# TODO potentially plot the spawning peak dates vs year to show if seasons affect it
+```
+
+
 # Discussion
+
+```{r}
+# TODO talk about the fact that region caught vs population count region were not considered,
+# to be more accuracte, we would monitor changes between each watershed
+
+# Talk about the large amount of na values, population may not be accurately represented in some years
+```
+
 
 # Appendix
 
