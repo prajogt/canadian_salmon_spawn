@@ -8,7 +8,6 @@
 
 #### Workplace setup ####
 
-library(rstanarm)
 library(tidyverse)
 library(modelsummary)
 
