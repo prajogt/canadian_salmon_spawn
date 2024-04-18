@@ -52,4 +52,17 @@ write_parquet(aggregated_spawning_population, "output/data/aggregated_spawning_p
 
 # Aggregate broodstock data
 
+aggregated_broodstock <-
+  broodstock |>
+  group_by(YEAR) |>
+  summarize(
+    ADULT_BROODSTOCK_REMOVALS = sum(ADULT_BROODSTOCK_REMOVALS, na.rm = TRUE),
+    JACK_BROODSTOCK_REMOVALS = sum(JACK_BROODSTOCK_REMOVALS, na.rm = TRUE),
+    TOTAL_BROODSTOCK_REMOVALS = sum(TOTAL_BROODSTOCK_REMOVALS, na.rm = TRUE),
+    OTHER_REMOVALS = sum(OTHER_REMOVALS, na.rm = TRUE),
+    TOTAL_RETURN_TO_RIVER = sum(TOTAL_RETURN_TO_RIVER, na.rm = TRUE)
+  ) |>
+  filter(YEAR >= 1979) |>
+  arrange(YEAR)
 
+write_parquet(aggregated_broodstock, "output/data/aggregated_broodstock.parquet")
