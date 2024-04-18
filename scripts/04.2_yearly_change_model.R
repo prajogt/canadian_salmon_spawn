@@ -47,7 +47,7 @@ yearly_change_model <-
     formula = NEXT_YEAR_RETURN ~ ADULT_BROODSTOCK_REMOVALS + JACK_BROODSTOCK_REMOVALS + TOTAL_BROODSTOCK_REMOVALS + OTHER_REMOVALS + TOTAL_RETURN_TO_RIVER,
     data = model_data,
     family = gaussian(),
-    prior = normal(location = 8, scale = 2.5, autoscale = TRUE),
+    prior = normal(location = 0, scale = 2.5, autoscale = TRUE),
     prior_intercept = normal(0, 2.5, autoscale = TRUE),
     prior_aux = exponential(rate = 1, autoscale = TRUE),
     seed = 302
