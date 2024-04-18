@@ -52,16 +52,25 @@ model_data <-
   summarize(
     VESSEL_COUNT = max(VESSEL_COUNT), # Max since all are the same for a year
     BOAT_DAYS = max(BOAT_DAYS),
-    SALMON_KPT = sum(SALMON_KPT) / 100000, # Track catches in 100,000s
-    SALMON_RLD = sum(SALMON_RLD) / 100000,
-    SALMON_POPULATION = sum(SALMON_POPULATION) / 100000,
+    SALMON_KPT = sum(SALMON_KPT), # Track catches in 100,000s
+    SALMON_RLD = sum(SALMON_RLD),
+    SALMON_POPULATION = sum(SALMON_POPULATION),
     PERCENTAGE_gill_net = max(PERCENTAGE_gill_net) * 100, # Convert decimals to percentages
     PERCENTAGE_seine = max(PERCENTAGE_seine) * 100,
     PERCENTAGE_troll = max(PERCENTAGE_troll) * 100
   )
 
 # The linear model based on the catch data
-catch_population_model <- lm(SALMON_POPULATION ~ VESSEL_COUNT + BOAT_DAYS + SALMON_KPT + SALMON_RLD + PERCENTAGE_gill_net + PERCENTAGE_seine + PERCENTAGE_troll, data = model_data)
+catch_population_model <- 
+  stan_glm(
+    formula = SALMON_POPULATION ~ VESSEL_COUNT + BOAT_DAYS + SALMON_KPT + SALMON_RLD + PERCENTAGE_gill_net + PERCENTAGE_seine + PERCENTAGE_troll, 
+    data = model_data,
+    family = gaussian(),
+    prior = normal(location = 8, scale = 2.5, autoscale = TRUE),
+    prior_intercept = normal(0, 2.5, autoscale = TRUE),
+    prior_aux = exponential(rate = 1, autoscale = TRUE),
+    seed = 302
+  )
 
 saveRDS(
   catch_population_model,

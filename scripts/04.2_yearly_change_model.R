@@ -42,7 +42,16 @@ model_data <-
     NEXT_YEAR_RETURN = NEXT_YEAR_RETURN / 1000
   )
 
-yearly_change_model <- lm(NEXT_YEAR_RETURN ~ ADULT_BROODSTOCK_REMOVALS + JACK_BROODSTOCK_REMOVALS + TOTAL_BROODSTOCK_REMOVALS + OTHER_REMOVALS + TOTAL_RETURN_TO_RIVER, data = model_data)
+yearly_change_model <- 
+  stan_glm(
+    formula = NEXT_YEAR_RETURN ~ ADULT_BROODSTOCK_REMOVALS + JACK_BROODSTOCK_REMOVALS + TOTAL_BROODSTOCK_REMOVALS + OTHER_REMOVALS + TOTAL_RETURN_TO_RIVER,
+    data = model_data,
+    family = gaussian(),
+    prior = normal(location = 8, scale = 2.5, autoscale = TRUE),
+    prior_intercept = normal(0, 2.5, autoscale = TRUE),
+    prior_aux = exponential(rate = 1, autoscale = TRUE),
+    seed = 302
+  )
 
 saveRDS(
   yearly_change_model,
