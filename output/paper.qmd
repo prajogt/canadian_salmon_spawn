@@ -209,7 +209,7 @@ This dataset is provided in three parts, separated by the type of commercial fis
 
   -   Trolling involves trailing baited fishing lines behind a moving vessel. The lines are attached to fishing rods or reels and are drawn through the water at varying depths and speeds. This method allows fishermen to target specific species of fish by adjusting the depth and speed of the trolling lines.
 
-Understanding the type of fishing method used is crucial because each method has different impacts on salmon populations. For example:
+Understanding the type of fishing method used is important because each method has different impacts on salmon populations. For example:
 
 - Gill nets are known for their high selectivity, catching fish primarily by their gills. However, they can also unintentionally catch non-target species and may lead to bycatch issues.
 
