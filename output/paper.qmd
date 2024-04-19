@@ -395,7 +395,7 @@ This data was downloaded, cleaned, parsed, analyzed, and visualized using R [@ci
 -   `readr` [@citereadr]
 -   `tibble` [@citetibble]
 
-For additional assistance with data storage, the `arrow` [@citearrow] was used and for report generation, the `knitr` [@citeknitr] package was used.
+For additional assistance with data storage, the `arrow` [@citearrow] package was used and for report generation, the `knitr` [@citeknitr] package was used. For testing / verifying data the `testthat` [@citetestthat] package was used.
 
 
 # Model
