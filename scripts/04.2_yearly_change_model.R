@@ -22,24 +22,24 @@ broodstock <- read_parquet("output/data/aggregated_broodstock.parquet")
 broodstock_next_year <- 
   broodstock |>
   select(YEAR, TOTAL_RETURN_TO_RIVER) |>
-  mutate(YEAR = YEAR - 1) |>
+  mutate(YEAR = YEAR - 4) |>
   rename(NEXT_YEAR_RETURN = TOTAL_RETURN_TO_RIVER)
 
 # Since for the first and last year, we have nothing to predict, we remove those
 broodstock <- 
   broodstock |>
-  filter(YEAR != max(YEAR))
+  filter(YEAR > min(YEAR) + 4)
 
 broodstock_next_year <-
   broodstock_next_year |>
-  filter(YEAR != min(YEAR))
+  filter(YEAR < max(YEAR) - 4)
 
 # Join the tables (essentially using last years spawning data to predict the next years spawning data)
 model_data <- 
   left_join(broodstock, broodstock_next_year, by = "YEAR") |>
   mutate(
-    TOTAL_RETURN_TO_RIVER = TOTAL_RETURN_TO_RIVER / 1000,
-    NEXT_YEAR_RETURN = NEXT_YEAR_RETURN / 1000
+    TOTAL_RETURN_TO_RIVER = TOTAL_RETURN_TO_RIVER / 10000,
+    NEXT_YEAR_RETURN = NEXT_YEAR_RETURN / 10000
   )
 
 yearly_change_model <- 
