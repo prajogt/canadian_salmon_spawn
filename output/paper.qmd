@@ -6,7 +6,7 @@ author:
 thanks: "Code and data are available at: https://github.com/prajogt/canadian_salmon_spawn.git ."
 date: today
 date-format: long
-abstract: "Using the NuSEDS dataset and Catch Estimates for the Pacific Region Commerical Salmon Fishery dataset provided by the Government of Canada, we investigate the effects of commercial fishing on the reproductive capacity of Canadian Salmon. Along with that, we can infer how much of the change in spawn rates can be therefore attributed to the health of the ecosystem, climate, and the fish that live in it. This paper discusses the impact of direct human intervention in the form of commercial fishing, aiming to highlight the importance in proper management and control in the fishing industry in alignement with changes in the environment by predicting spawning trends of future generations."
+abstract: "Using the NuSEDS dataset and Catch Estimates for the Pacific Region Commerical Salmon Fishery dataset provided by the Government of Canada, we investigate the effects of commercial fishing on the reproductive capacity of Canadian Salmon. Along with that, we can infer how much of the change in spawn rates can affect future populations, and whether stocking programs have been able to mitigate population decline. This paper discusses the impact of direct human intervention in the form of commercial fishing, aiming to highlight the importance in proper management and control in the fishing industry in alignement with changes in the environment by predicting spawning trends of future generations."
 format: pdf
 toc: true
 number-sections: true
@@ -504,14 +504,35 @@ modelsummary(
 
 # Results {#results}
 
+## Catch Model
+
+The model summary from @tbl-catchmodel shows the relationship between fishing activity and salmon populations. The model suggests that an increase in the amount of commercial vessels fishing for salmon on the water correlates with a decrease in the salmon populations. This is an expected result, with more pressure on fish, the more the population will suffer. Surprisingly however, the number of days spent fishing shows a slightly positive correlation. This unexpected finding suggests that spreading out fishing activity over more days may alleviate pressure on salmon populations, contributing to their preservation.
+
+Then looking to the actual catch numbers, it seems that the actual amount of salmon caught doesn't have a major impact on the salmon populations, which is a good result to have. This means that the restrictive measures placed on commercial fishers are working and are preventing the fishing industry from irreversibly depleting this resource. This suggests that it is not just about the amount of salmon that are actually removed from the ecosystem, but rather how much human interference from the mere act of fishing an ecosystem can handle. Fishing for salmon (and any other fish for that matter) in a destructive way can have impacts on the food chain that affect the salmon the same, even if the catch numbers do not portray that fact.
+
+More interestingly, there is a significant difference between the different methods of fishing to the salmon population. Specifically, @tbl-catchmodel suggests that when trolling is the dominant fishing method, salmon populations tend to be lower compared to periods when gill nets are prevalent. Seine nets, on the other hand, represent a middle ground, with lesser effects on salmon populations. These findings show the importance of considering the ecological implications of different salmon harvesting methods and the need for targeted management strategies to sustainably manage future salmon populations.
+
+## Yearly Model
+
+From the model shown in summary by @tbl-yearlymodel, the removal of salmon for broodstock only shows a slightly negative or possibly neutral relationship with future salmon population. The human influence through breeding and stocking salmon does not seem to have a greatly positive or negative effect on the overall population, but it suggests that other factors are at play. As mentioned in the [data](#data) section and shown in @fig-broodstockgraph @fig-populationgraph, it seems that while broodstock removals increase, population decreases, and since this model doesn't suggest a strong correlation between them, they must be connected in some other way. It is reasonable to say that this actually suggests that increased broodstock removals are a response to declining population, and are aimed at restoring losses that were occurred another way. While increased breeding doesn't increase the population over what it was before, it maintains it, appearing as a neutral relationship in a linear model. To be truly sure, research into the breeding and stocking process must be done to verify these results.
+
+Looking at the return to river variable in @tbl-yearlymodel, this suggests that most of the increase in population is closely related to how succesfully and plentiful the spawning was 4 years ago. The smolt (baby salmon), that hatched 4 years ago, most likely become the salmon that appear in the waterways to spawn now after they have reached maturity. This shows how important future planning is in salmon conservation, as impacts on population may not be seen immediately. Preventative measures are necessary, as reactive measures to suddenly declining salmon populations will not take effect for a significant period of time.
+
 # Discussion {#discussion}
 
-```{r}
-# TODO talk about the fact that region caught vs population count region were not considered,
-# to be more accuracte, we would monitor changes between each watershed
+## Weaknesses
 
-# Talk about the large amount of na values, population may not be accurately represented in some years
-```
+The datasets that were used provided location data in the forms of management regions which were not made use of in this dataset. Especially for the spawning regions, other factors could be taken into account to get a better understanding on what hardships a region is facing, and what fishing regions have greater impact to those spawning regions. This paper dealt with the general impacts and changes of Pacific Canadian salmon, but working at a smaller scale may help with identifying regional differences and allow different approaches depending on such.
+
+In addition, enviornmental factors were not considered in this report, although they were suggested to have correlation, due gaps in explanation for change just from human intervention. Disease, climate, food chain fluctuations, can all have impacts on the health and abundance of the salmon population, factors that can be changed in other ways and through different regulations.
+
+As for the data itself, there were a lot of missing values, which may impact the accuracy of the results, with some waterbodies / watersheds potentially being underrepresented when calculating population. Similarly, both the salmon population and catch data are both estimates made by Fisheries and Oceans Canada, meaning that the counts are not 100% accurate. If these estimates were made erroneously, this may also impact the accuracy of the models and results. 
+
+## What was done and should be done
+
+Through the use of linear models, we were able to make inferences on the world, in this case the world of salmon fisheries, results that could have impacts for both recreational anglers and the commercial fishing industry. By analyzing past fishing trends and spawning statistics, we were able to verify our expecations about human driven impacts on salmon populations. We saw the successes and failings of restrictive fishing regulations as well as how salmon breeding and stocking has supported the salmon population during a period of decline.
+
+From this analysis of salmon's decline, we aim to reiterate the importance of mitigation strategies and management plans to restore salmon populations and promote sustainable fishing practices. Governing bodies should focus on what has been working and put further emphasis in places which have been failing. Preserving healthy salmon populations is not only vital for biodiversity and ecosystem balance but also for meeting the demands of the fishing industry. Despite the significant correlations found between fishing frequency, previous salmon populations, and artificial breeding practices, it is clear that other factors not captured in the available data may also contribute to salmon population fluctuations. Further investigation into these factors should be done to gain a more comprehensive understanding of the dynamics affecting salmon populations and to inform effective conservation efforts moving forward.
 
 # References
 
