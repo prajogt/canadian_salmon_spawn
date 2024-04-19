@@ -263,9 +263,24 @@ For additional assistance with data storage, the `arrow` [@citearrow] was used a
 
 # Model
 
-To create the linear model we made use of the `rstanarm` [@citerstanarm] package.
+To create the linear model we made use of the `rstanarm` [@citerstanarm] package, and to summarize the results we made use of the `modelsummary` [@citemodelsummary] package.
 
 In particular we aim to predict salmon populations based on commercial fishing habits and previous year's spawning health.
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+#| echo: false
+
+# Load in models
+yearly_change_model <-
+  readRDS(file = "models/yearly_change_model.rds")
+
+catch_population_model <-
+  readRDS(file = "models/catch_population_model.rds")
+
+```
 
 ## Catch Model
 
@@ -293,8 +308,22 @@ $$
 
 These variables are included to see if certain methods of fishing have a greater or lesser effect on the salmon population.
 
+@tbl-catchmodel shows a model summary for this model, this will be discussed further in the [results](#results) section.
+
 ```{r}
-# TODO modelsummary
+#| message: false
+#| warning: false
+#| echo: false
+#| label: tbl-catchmodel
+#| tbl-cap: "Predicting the Salmon Population given commercial fishing catch estimates"
+
+modelsummary(
+  list(
+    "Salmon Population" = catch_population_model
+  ),
+  statistic = "mad"
+  )
+
 ```
 
 ## Yearly Model
@@ -318,12 +347,25 @@ $$
 
 Where the variables are defined the same way as mentioned when discussing @tbl-broodstock and @tbl-spawnpopulation, with the except to `next-year-salmon-population`, which is the population of salmon 4 years after a certain observation was made as mentioned above.
 
+@tbl-yearlymodel shows a model summary for this model, this will be discussed in the [results](#results) section.
+
 ```{r}
-# TODO modelsummary
+#| message: false
+#| warning: false
+#| echo: false
+#| label: tbl-yearlymodel
+#| tbl-cap: "Predicting the Salmon Population in 4 years time given a year's spawn statistics"
+
+modelsummary(
+  list(
+    "Salmon Population" = yearly_change_model
+  ),
+  statistic = "mad"
+  )
+
 ```
 
-
-# Results
+# Results {#results}
 
 # Discussion {#discussion}
 
