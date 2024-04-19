@@ -48,6 +48,12 @@ aggregated_spawning_population <-
     SALMON_POPULATION = sum(SALMON_POPULATION, na.rm = TRUE)
   )
 
+aggregated_spawning_population$NATURAL_ADULT_SPAWNERS <- 
+  round(aggregated_spawning_population$NATURAL_ADULT_SPAWNERS)
+
+aggregated_spawning_population$SALMON_POPULATION <- 
+  round(aggregated_spawning_population$SALMON_POPULATION)
+
 write_parquet(aggregated_spawning_population, "output/data/aggregated_spawning_population.parquet")
 
 # Aggregate broodstock data
@@ -64,5 +70,8 @@ aggregated_broodstock <-
   ) |>
   filter(YEAR >= 1979) |>
   arrange(YEAR)
+
+aggregated_broodstock$TOTAL_RETURN_TO_RIVER <- 
+  round(aggregated_broodstock$TOTAL_RETURN_TO_RIVER)
 
 write_parquet(aggregated_broodstock, "output/data/aggregated_broodstock.parquet")
