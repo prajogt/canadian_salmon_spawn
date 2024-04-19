@@ -248,8 +248,145 @@ Salmon Species Released:
 - Although @tbl-catchdata_gill, @tbl-catchdata_seine, and @tbl-catchdata_troll only show sockeye kept, the catch estimates for all other salmon species are also present, they were omitted here due for simplicity.
 
 ```{r}
-# TODO show all the relationships (broodstock vs population, total catches vs population, type vs population)
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Salmon Catch Data from 2002-2022 (Gill)"
+#| fig-subcap: ["Coho and Chinook", "Chum, Pink, and Sockeye"]
+#| label: fig-catchgraph_gill
+#| layout-ncol: 2
+
+pivoted_catch_data <- 
+  gill_net_catches |>
+  select(-STEELHEAD_KEPT, -SOCKEYE_KEPT, -CHUM_KEPT, -PINK_KEPT) |>
+  pivot_longer(cols = contains("_KEPT"), names_to = "Species", values_to = "Count")
+
+ggplot(pivoted_catch_data, aes(x = CALENDAR_YEAR, y = Count, fill = Species)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Calendar Year", y = "Count", fill = "Species") +
+  theme_minimal()
+
+pivoted_catch_data <- 
+  gill_net_catches |>
+  select(-STEELHEAD_KEPT, -CHINOOK_KEPT, -COHO_KEPT) |>
+  pivot_longer(cols = contains("_KEPT"), names_to = "Species", values_to = "Count")
+
+ggplot(pivoted_catch_data, aes(x = CALENDAR_YEAR, y = Count, fill = Species)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Calendar Year", y = "Count", fill = "Species") +
+  theme_minimal()
+
 ```
+
+```{r}
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Salmon Catch Data from 2002-2022 (Seine)"
+#| fig-subcap: ["Coho and Chinook", "Chum, Pink, and Sockeye"]
+#| label: fig-catchgraph_seine
+#| layout-ncol: 2
+
+pivoted_catch_data <- 
+  seine_catches |>
+  select(-STEELHEAD_KEPT, -SOCKEYE_KEPT, -CHUM_KEPT, -PINK_KEPT) |>
+  pivot_longer(cols = contains("_KEPT"), names_to = "Species", values_to = "Count")
+
+ggplot(pivoted_catch_data, aes(x = CALENDAR_YEAR, y = Count, fill = Species)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Calendar Year", y = "Salmon Kept", fill = "Species") +
+  theme_minimal()
+
+pivoted_catch_data <- 
+  seine_catches |>
+  select(-STEELHEAD_KEPT, -CHINOOK_KEPT, -COHO_KEPT) |>
+  pivot_longer(cols = contains("_KEPT"), names_to = "Species", values_to = "Count")
+
+ggplot(pivoted_catch_data, aes(x = CALENDAR_YEAR, y = Count, fill = Species)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Calendar Year", y = "Salmon Kept", fill = "Species") +
+  theme_minimal()
+
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Salmon Catch Data from 2002-2022 (Troll)"
+#| fig-subcap: ["Coho and Chinook", "Chum, Pink, and Sockeye"]
+#| label: fig-catchgraph_troll
+#| layout-ncol: 2
+
+pivoted_catch_data <- 
+  troll_catches |>
+  select(-STEELHEAD_KEPT, -SOCKEYE_KEPT, -CHUM_KEPT, -PINK_KEPT) |>
+  pivot_longer(cols = contains("_KEPT"), names_to = "Species", values_to = "Count")
+
+ggplot(pivoted_catch_data, aes(x = CALENDAR_YEAR, y = Count, fill = Species)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Calendar Year", y = "Salmon Kept", fill = "Species") +
+  theme_minimal()
+
+pivoted_catch_data <- 
+  troll_catches |>
+  select(-STEELHEAD_KEPT, -CHINOOK_KEPT, -COHO_KEPT) |>
+  pivot_longer(cols = contains("_KEPT"), names_to = "Species", values_to = "Count")
+
+ggplot(pivoted_catch_data, aes(x = CALENDAR_YEAR, y = Count, fill = Species)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Calendar Year", y = "Salmon Kept", fill = "Species") +
+  theme_minimal()
+
+```
+
+@fig-catchgraph_gill, @fig-catchgraph_seine, and @fig-catchgraph_troll show comparitive catch estimates between the different methods of fishing with some years finding more use or success in certain methods over others. With these variations, we aim to analyze if certain methods should be used over others due to their effectiveness, sustainability, or otherwise.
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Salmon Broodstock Removals From 1975 - 2022"
+#| label: fig-broodstockgraph
+
+pivoted_broodstock_data <- 
+  broodstock |>
+  filter(YEAR >= 1975) |>
+  select(YEAR, ADULT_BROODSTOCK_REMOVALS, JACK_BROODSTOCK_REMOVALS) |>
+  pivot_longer(cols = c(ADULT_BROODSTOCK_REMOVALS, JACK_BROODSTOCK_REMOVALS), names_to = "Removal_Type", values_to = "Count")
+
+ggplot(pivoted_broodstock_data, aes(x = YEAR, y = Count, fill = Removal_Type)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(x = "Year", y = "Broodstock Removed", fill = "Removal Type") +
+  theme_minimal()
+
+
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Salmon Populations From 1975 - 2022"
+#| label: fig-populationgraph
+
+broodstock |>
+  filter(YEAR >= 1975) |>
+  ggplot(aes(x = YEAR, y = TOTAL_RETURN_TO_RIVER)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Year", y = "Total Return to River") +
+  theme_minimal()
+```
+
+@fig-broodstockgraph and @fig-populationgraph show the trends of population in relation to breeding efforts. It is evident that as salmon populations have declined, more effort is being made in trying to repopulate as shown by the increase in broodstock removals in @fig-broodstockgraph. With this, the model will aim to capture the true effectiveness of these efforts.
+
+For the purposes of this report, salmon species were grouped together and total populations irrespective of area were considered instead. The health of salmon populations within species is closely connected, spawning at the same time, maturing roughly at around the same time [@citelifespan]. Due to this reasoning as well as testing with separate species showing similar results it was decided that species would be considered all the same for the purposes of this report.
 
 This data was downloaded, cleaned, parsed, analyzed, and visualized using R [@citeR], a statistical programming language, with package support from `tidyverse` [@citetidyverse], a collection of libraries which included the following packages that were utilized:
 
