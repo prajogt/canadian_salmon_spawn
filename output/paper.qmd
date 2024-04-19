@@ -267,7 +267,30 @@ To create the linear model we made use of the `rstanarm` [@citerstanarm] package
 
 ## Catch Model
 
+$$
+\begin{aligned}
+&\mbox{salmon-population}_i|\mu_i, \sigma \sim \mbox{Normal}(\mu_i, \sigma) \\
+\mu_i &= \beta_0 +\beta_1\mbox{vessel-count}_i +\beta_2\mbox{boat-days}_i \\
+& +\beta_3\mbox{salmon-kept}_i +\beta_4\mbox{salmon-released}_i\\
+& +\beta_5\mbox{percentage-gill-net}_i +\beta_6\mbox{percentage-seine}_i\\
+& +\beta_7\mbox{percentage-troll}_i\\
+\beta_{0, 1, ... 7} &\sim \mbox{Normal}(0, 2.5) \\
+\sigma &\sim \mbox{Exponential}(1) \\
+\end{aligned}
+$$
+
 ## Yearly Model
+
+$$
+\begin{aligned}
+&\mbox{next-year-salmon-population}_i|\mu_i, \sigma \sim \mbox{Normal}(\mu_i, \sigma) \\
+\mu_i &= \beta_0 +\beta_1\mbox{adult-broodstock-removals}_i +\beta_2\mbox{jack-broodstock-removals}_i \\
+& +\beta_3\mbox{total-broodstock-removals}_i +\beta_4\mbox{other-removals}_i\\
+& +\beta_5\mbox{total-return-to-river}_i \\
+\beta_{0, 1, ... 5} &\sim \mbox{Normal}(0, 2.5) \\
+\sigma &\sim \mbox{Exponential}(1) \\
+\end{aligned}
+$$
 
 # Results
 
