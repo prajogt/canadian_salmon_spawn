@@ -6,7 +6,7 @@ author:
 thanks: "Code and data are available at: https://github.com/prajogt/canadian_salmon_spawn.git ."
 date: today
 date-format: long
-abstract: "Using the NuSEDS dataset and Catch Estimates for the Pacific Region Commerical Salmon Fishery dataset provided by the Government of Canada, we investigate the effects of commercial fishing on the reproductive capacity of Canadian Salmon. Along with that, we investigate how much of the change in spawn rates can be attributed to the health of the ecosystem, climate, and the fish that live in it. This paper discusses the impact of direct human intervention in the form of commercial fishing, aiming to highlight the importance in proper management and control in the fishing industry in alignement with changes in the environment by predicting spawning trends of future generations."
+abstract: "Using the NuSEDS dataset and Catch Estimates for the Pacific Region Commerical Salmon Fishery dataset provided by the Government of Canada, we investigate the effects of commercial fishing on the reproductive capacity of Canadian Salmon. Along with that, we can infer how much of the change in spawn rates can be therefore attributed to the health of the ecosystem, climate, and the fish that live in it. This paper discusses the impact of direct human intervention in the form of commercial fishing, aiming to highlight the importance in proper management and control in the fishing industry in alignement with changes in the environment by predicting spawning trends of future generations."
 format: pdf
 toc: true
 number-sections: true

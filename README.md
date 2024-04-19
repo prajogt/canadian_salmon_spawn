@@ -1,9 +1,7 @@
 ## Analyzing Canadian Salmon Spawn Statistics
 
 ## Overview
-This paper makes use of a Linear Model to predict Salmon Populations
-
-TODO
+This project makes use of a Linear Model to predict Salmon Populations. It examines the impact of commercial fishing on the reproductive capacity of Canadian Salmon, utilizing datasets from the NuSEDS and the Government of Canada's Pacific Region Commercial Salmon Fishery. We investigate the influence of commercial fishing alongside spawning health on salmon populations. Emphasizing the significance of effective management, we aim to show the need for sustainable fishing practices to mitigate negative impacts to the Canadian salmon population.
 
 ## File Structure
 - `inputs` contains the NuSEDS and Catch Estimate data, including the corresponding data dictionaries. This is the raw dataset downloaded directly from Canada's open data portal.
