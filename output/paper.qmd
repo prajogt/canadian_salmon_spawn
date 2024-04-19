@@ -39,7 +39,7 @@ Through information gathered from these datasets, we were able to verify correla
 
 This paper will introduce the data and models we used to analyze these themes and trends, explaining why features and datasets were chosen and how they are relevant to the research topic. The models we create will use commercial fisheries' catch estimates and past years artificial and natural spawn success respectively as the estimands to predict salmon populations. Then the paper will present our findings and their implications for future salmon generations observed in the models that were created as well as in the data. We will conclude by discussing the weaknesses and future steps that could be made to further improve on this research.
 
-# Data
+# Data {#data}
 
 The data used in this paper was provided by the Government of Canada through their Open Government Portal, published by Fisheries and Oceans Canada. This portal provided other datasets relating to salmon health / population, however, the datasets selected are consistently updated and provide relevant as well as historical data that is useful when researching yearly trends which salmon populations are due to the fact that future populations are largely impacted by the success of each year's spawn. 
 
@@ -265,7 +265,15 @@ For additional assistance with data storage, the `arrow` [@citearrow] was used a
 
 To create the linear model we made use of the `rstanarm` [@citerstanarm] package.
 
+In particular we aim to predict salmon populations based on commercial fishing habits and previous year's spawning health.
+
 ## Catch Model
+
+The first model that was created was intended to discover whether the amount of fish harvested through commercial fisheries and the amount of vessels actively harvesting significantly impacted salmon population in Pacific Canada.
+
+We expect that an increase in the amount of fish harvested would impact the population, so we aim to ensure that commercial fishing was and will be done in a controlled and sustainable way. Here we are really testing the effectiveness of fishing regulations and license allocations that the Canadian government has put in place to protect salmon populations.
+
+Therefore the model we are interested in is:
 
 $$
 \begin{aligned}
@@ -279,7 +287,23 @@ $$
 \end{aligned}
 $$
 
+`salmon-population`, `vessel-count`, `boat-days`, `salmon-kept` and `salmon-released` are all as they were in @tbl-catchdata_gill, @tbl-catchdata_seine, and @tbl-catchdata_troll, accounting for the frequency and quantity of harvest.
+
+`percentage-gill-net`, `seine`, and `troll` account for how much of the total amount of salmon harvested came from that respective method, since all salmon species and fishing methods were aggregated as mentioned in the [data](#data) section.
+
+These variables are included to see if certain methods of fishing have a greater or lesser effect on the salmon population.
+
+```{r}
+# TODO modelsummary
+```
+
 ## Yearly Model
+
+The second model uses past year's spawning data to predict the next year's populations. It is reasonable to expect that bad spawning rates one year can affect future year's spawning rates. With NOAA stating that the most common age of returning and spawning adults being 4 years old [@citelifespan], the predicted variable is the salmon populations observed 4 years in the future. 
+
+There are also 2 types of spawning data as shown in @tbl-broodstock vs @tbl-spawnpopulation, being natural vs human cultivated, so the model takes into account those factors, aiming to see the the natural sustainability of salmon populations as well as the impact of protected and selective breeding on those populations.
+
+Therefore the model we are interested in is:
 
 $$
 \begin{aligned}
@@ -291,6 +315,13 @@ $$
 \sigma &\sim \mbox{Exponential}(1) \\
 \end{aligned}
 $$
+
+Where the variables are defined the same way as mentioned when discussing @tbl-broodstock and @tbl-spawnpopulation, with the except to `next-year-salmon-population`, which is the population of salmon 4 years after a certain observation was made as mentioned above.
+
+```{r}
+# TODO modelsummary
+```
+
 
 # Results
 
