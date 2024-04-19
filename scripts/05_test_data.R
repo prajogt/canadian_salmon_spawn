@@ -67,13 +67,17 @@ expect_true(all(spawning_data$TOTAL_RETURN_TO_RIVER %% 1 == 0),
 expect_true(all(spawning_data$SALMON_POPULATION %% 1 == 0),
             info = "SALMON_POPULATION column values should be integers")
 
-expect_true(all(catch_data$ADULT_BROODSTOCK_REMOVALS %% 1 == 0), 
-            msg = "ADULT_BROODSTOCK_REMOVALS column contains only integers.")
-expect_true(all(catch_data$JACK_BROODSTOCK_REMOVALS %% 1 == 0), 
-            msg = "JACK_BROODSTOCK_REMOVALS column contains only integers.")
-expect_true(all(catch_data$TOTAL_BROODSTOCK_REMOVALS %% 1 == 0), 
-            msg = "TOTAL_BROODSTOCK_REMOVALS column contains only integers.")
-expect_true(all(catch_data$OTHER_REMOVALS %% 1 == 0), 
-            msg = "OTHER_REMOVALS column contains only integers.")
-expect_true(all(catch_data$TOTAL_RETURN_TO_RIVER %% 1 == 0), 
-            msg = "TOTAL_RETURN_TO_RIVER column contains only integers.")
+expect_true(all(broodstock_data$ADULT_BROODSTOCK_REMOVALS %% 1 == 0), 
+            info = "ADULT_BROODSTOCK_REMOVALS column contains only integers.")
+
+expect_true(all(broodstock_data$JACK_BROODSTOCK_REMOVALS %% 1 == 0), 
+            info = "JACK_BROODSTOCK_REMOVALS column contains only integers.")
+
+expect_true(all(broodstock_data$TOTAL_BROODSTOCK_REMOVALS %% 1 == 0), 
+            info = "TOTAL_BROODSTOCK_REMOVALS column contains only integers.")
+
+expect_true(all(broodstock_data$OTHER_REMOVALS %% 1 == 0), 
+            info = "OTHER_REMOVALS column contains only integers.")
+
+expect_true(all(broodstock_data$TOTAL_RETURN_TO_RIVER %% 1 == 0), 
+            info = "TOTAL_RETURN_TO_RIVER column contains only integers.")
