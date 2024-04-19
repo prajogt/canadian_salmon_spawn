@@ -8,6 +8,8 @@ This project makes use of a Linear Model to predict Salmon Populations. It exami
 
 - `other/sketches` contains the sketches of the dataset and figure we want to represent in our paper.
 
+- `other/datasheets` contains the datasheets for both the datasets that were used in our paper.
+
 - `output/data` contains the cleaned data which is ready to be processed into the models.
 
 - `output/models` contains the two models generated from the dataset. 
