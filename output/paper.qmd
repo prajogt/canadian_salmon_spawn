@@ -43,7 +43,9 @@ This paper will introduce the data and models we used to analyze these themes an
 
 The data used in this paper was provided by the Government of Canada through their Open Government Portal, published by Fisheries and Oceans Canada.
 
-For information regarding the populations of Canadian Salmon in the Pacific region, the New Salmon Escapement Database System was used to retrieve the quality and health of the Salmon population. This data is not only used to measure the populations but other health and success measures that certain area salmon have. These observations are made during the spawning season for salmon (from September - November), recording the amount of salmon that have come to spawn in a certain waterbody. As it is not possible for those wildlife officials to individually count each salmon that enters a waterway at any time during the day, an estimated count was made based on the abundance of salmon currently present during the observation.
+## Spawn
+
+For information regarding the populations of Canadian Salmon in the Pacific region, the *New Salmon Escapement Database System (NuSEDS)* was used to retrieve the quality and health of the Salmon population. This data is not only used to measure the populations but other health and success measures that certain area salmon have. These observations are made during the spawning season for salmon (from September - November), recording the amount of salmon that have come to spawn in a certain waterbody. As it is not possible for those wildlife officials to individually count each salmon that enters a waterway at any time during the day, an estimated count was made based on the abundance of salmon currently present during the observation.
 
 The database provides salmon spawning observations starting from 1920's, but population numbers were not recorded / provided until 1979. As such, rows not providing population numbers were not considered. In addition, for each model, specific features were necessary to create the model, and the original dataset was split into two models, each only containing the entries that include relevant information. 
 
@@ -140,9 +142,10 @@ Other Removals:
 
   -   These are the amount of salmon that were removed from their natural environment by humans for other reasons (not broodstock) which were not defined by the dataset. 
 
+## Catch
 
+For information regarding the salmon caught in commercial fisheries, the *Pacific Region Commercial Salmon Fishery In-season Catch Estimates* was used. This data comes from the Fishery Operations System (FOS) which serves as the primary database for Fisheries and Oceans Canada's (DFO) Pacific Region Commercial Salmon Logbook program, established in 1998 and mandated fleet-wide participation by 2001. This program compels commercial salmon fishers to log daily catch and effort data in harvest logbooks, subsequently reporting it to DFO via service providers within specified deadlines. However, certain personal information provided by fishers is protected and inaccessible. Fishery Managers utilize this reported data, alongside additional sources like overflights, to compute in-season catch estimates. Its important to note that this dataset omits data from test fishing, recreational fishing, or First Nations harvest.
 
-For information regarding
 
 ```{r}
 #| warning: false
@@ -152,14 +155,13 @@ For information regarding
 #| tbl-cap: "Commercial Salmon Fishing Catch Estimates from 2005 - 2022 from Gill Net Fisheries"
 
 gill_net_catches |>
-  select(-FISHERY, -LICENCE_AREA, -NOTES) |>
+  select(CALENDAR_YEAR, MGMT_AREA, VESSEL_COUNT, BOAT_DAYS, SOCKEYE_KEPT, SOCKEYE_RELD) |>
   head() |>
   kable(
-    col.names = c("Year", "Management Area", "Vessel Count", "Boat Days", "Sockeye Kept", "Sockeye Released", "Coho Kept", "Coho Released", "Pink Kept", "Pink Released", "Chum Kept", "Chum Released", "Chinook Kept", "Chinook Released", "Steelhead Kept", "Steelhead Released"),
+    col.names = c("Year", "Management Area", "Vessel Count", "Boat Days", "Sockeye Kept", "Sockeye Released"),
     booktabs = TRUE
   )
 ```
-
 
 ```{r}
 #| warning: false
@@ -169,10 +171,10 @@ gill_net_catches |>
 #| tbl-cap: "Commercial Salmon Fishing Catch Estimates from 2005 - 2022 from Seine Net Fisheries"
 
 seine_catches |>
-  select(-FISHERY, -LICENCE_AREA, -NOTES) |>
+  select(CALENDAR_YEAR, MGMT_AREA, VESSEL_COUNT, BOAT_DAYS, SOCKEYE_KEPT, SOCKEYE_RELD) |>
   head() |>
   kable(
-    col.names = c("Year", "Management Area", "Vessel Count", "Boat Days", "Sockeye Kept", "Sockeye Released", "Coho Kept", "Coho Released", "Pink Kept", "Pink Released", "Chum Kept", "Chum Released", "Chinook Kept", "Chinook Released", "Steelhead Kept", "Steelhead Released"),
+    col.names = c("Year", "Management Area", "Vessel Count", "Boat Days", "Sockeye Kept", "Sockeye Released"),
     booktabs = TRUE
   )
 ```
@@ -185,24 +187,79 @@ seine_catches |>
 #| tbl-cap: "Commercial Salmon Fishing Catch Estimates from 2005 - 2022 from Trolling Fisheries"
 
 troll_catches |>
-  select(-FISHERY, -LICENCE_AREA, -NOTES) |>
+  select(CALENDAR_YEAR, MGMT_AREA, VESSEL_COUNT, BOAT_DAYS, SOCKEYE_KEPT, SOCKEYE_RELD) |>
   head() |>
   kable(
-    col.names = c("Year", "Management Area", "Vessel Count", "Boat Days", "Sockeye Kept", "Sockeye Released", "Coho Kept", "Coho Released", "Pink Kept", "Pink Released", "Chum Kept", "Chum Released", "Chinook Kept", "Chinook Released", "Steelhead Kept", "Steelhead Released"),
+    col.names = c("Year", "Management Area", "Vessel Count", "Boat Days", "Sockeye Kept", "Sockeye Released"),
     booktabs = TRUE
   )
 ```
 
+This dataset is provided in three parts, separated by the type of commercial fishing that was being tracked. The three types being: Gill nets, Seine nets, and Trolling.
+
+**Gill Nets**
+
+  -   These are vertical panels of netting suspended in the water by a float line and a weighted line. Fish swimming into the net become entangled by their gills as they attempt to pass through the mesh. Gill nets are often set in a stationary position and left for a period of time before retrieval.
+
+**Seine Nets**
+
+  -   Seine nets are large, horizontal nets deployed from the side of a vessel. They typically have floats along the top edge and weights along the bottom to create a wall of netting that can be drawn in a circular motion to encircle fish. Once the fish are contained within the net, it is hauled in and the catch is retrieved.
+
+**Trolling**
+
+  -   Trolling involves trailing baited fishing lines behind a moving vessel. The lines are attached to fishing rods or reels and are drawn through the water at varying depths and speeds. This method allows fishermen to target specific species of fish by adjusting the depth and speed of the trolling lines.
+
+Understanding the type of fishing method used is crucial because each method has different impacts on salmon populations. For example:
+
+- Gill nets are known for their high selectivity, catching fish primarily by their gills. However, they can also unintentionally catch non-target species and may lead to bycatch issues.
+
+- Seine nets are effective for catching large quantities of fish in a single haul, but they may have a significant impact on fish habitat and can result in the incidental capture of non-target species.
+
+- Trolling is often considered a more sustainable fishing method compared to nets because it allows for the release of non-target species and reduces habitat damage. However, it can still have localized impacts on salmon populations if not properly managed.
+
+By categorizing the dataset based on the type of commercial fishing method, we can better understand the specific impacts of each method on salmon populations and inform fisheries management decisions accordingly.
+
+For each of @tbl-catchdata_gill, @tbl-catchdata_seine, @tbl-catchdata_troll, we consider the following variables:
+
+Year + Management Area:
+
+- Similarly to @tbl-spawnpopulation, this signifies the year and area the catch estimates were made for. However in this case the management area is different to the area mentioned prior. It also refers to a region, however this time it refers to the area that a fish was caught in.
+
+- Regarding this field, it was originally intended to be used to match up certain fishing regions to certain spawning regions. However, since it is not guaranteed or even expected that salmon stay close to their spawning grounds during the open fishing season, these area fields were not used in this matter. They do still have value that is not used in this report, as will be mentioned in the [discussion](#discussion) section.
+
+Vessel Count:
+
+- This measures the amount of vessels fishing in a certain management area in the year.
+
+Boat Days:
+
+- This measures the total amount of days that each vessel was fishing in that management area. For instance if there were two vessels fishing for the same two days each, that would be 4 boat days.
+
+Salmon Species Kept:
+
+- These are the amount of salmons of that particular species indicated in the column name were kept from that management area in that year.
+
+- Although @tbl-catchdata_gill, @tbl-catchdata_seine, and @tbl-catchdata_troll only show sockeye kept, the catch estimates for all other salmon species are also present, they were omitted here due for simplicity.
+
+Salmon Species Released:
+
+- These are the amount of salmons of that particular species indicated in the column name were caught but not kept and released back into the water from that management area in that year.
+
+- Although @tbl-catchdata_gill, @tbl-catchdata_seine, and @tbl-catchdata_troll only show sockeye kept, the catch estimates for all other salmon species are also present, they were omitted here due for simplicity.
+
+```{r}
+# TODO show all the relationships (broodstock vs population, total catches vs population, type vs population)
+```
+
 # Model
+
+## Catch Model
+
+## Yearly Model
 
 # Results
 
-```{r}
-# TODO potentially plot the spawning peak dates vs year to show if seasons affect it
-```
-
-
-# Discussion
+# Discussion {#discussion}
 
 ```{r}
 # TODO talk about the fact that region caught vs population count region were not considered,
@@ -210,9 +267,6 @@ troll_catches |>
 
 # Talk about the large amount of na values, population may not be accurately represented in some years
 ```
-
-
-# Appendix
 
 # References
 
