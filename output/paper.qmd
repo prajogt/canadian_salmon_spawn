@@ -41,7 +41,7 @@ This paper will introduce the data and models we used to analyze these themes an
 
 # Data
 
-The data used in this paper was provided by the Government of Canada through their Open Government Portal, published by Fisheries and Oceans Canada.
+The data used in this paper was provided by the Government of Canada through their Open Government Portal, published by Fisheries and Oceans Canada. This portal provided other datasets relating to salmon health / population, however, the datasets selected are consistently updated and provide relevant as well as historical data that is useful when researching yearly trends which salmon populations are due to the fact that future populations are largely impacted by the success of each year's spawn. 
 
 ## Spawn
 
@@ -251,7 +251,19 @@ Salmon Species Released:
 # TODO show all the relationships (broodstock vs population, total catches vs population, type vs population)
 ```
 
+This data was downloaded, cleaned, parsed, analyzed, and visualized using R [@citeR], a statistical programming language, with package support from `tidyverse` [@citetidyverse], a collection of libraries which included the following packages that were utilized:
+
+-   `ggplot2` [@citeggplot]
+-   `dplyr` [@citedplyr]
+-   `readr` [@citereadr]
+-   `tibble` [@citetibble]
+
+For additional assistance with data storage, the `arrow` [@citearrow] was used and for report generation, the `knitr` [@citeknitr] package was used.
+
+
 # Model
+
+To create the linear model we made use of the `rstanarm` [@citerstanarm] package.
 
 ## Catch Model
 
